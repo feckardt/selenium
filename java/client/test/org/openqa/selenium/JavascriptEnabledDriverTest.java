@@ -28,17 +28,17 @@ import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.WaitingConditions.windowToBeSwitchedToWithName;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
-import org.openqa.selenium.htmlunit.HtmlUnitDriver;
 import org.openqa.selenium.internal.Locatable;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 
 /**
  * Test case for browsers that support using Javascript
@@ -215,9 +215,7 @@ public class JavascriptEnabledDriverTest extends JUnit4TestBase {
   @Test
   public void testShouldBeAbleToGetTheLocationOfAnElement() {
     assumeTrue(driver instanceof JavascriptExecutor);
-    if (driver instanceof HtmlUnitDriver) {
-      assumeTrue(((HtmlUnitDriver) driver).isJavascriptEnabled());
-    }
+    assumeTrue(((HasCapabilities) driver).getCapabilities().isJavascriptEnabled());
 
     driver.get(pages.javascriptPage);
 

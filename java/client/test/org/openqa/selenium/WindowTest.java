@@ -24,13 +24,14 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.Platform.LINUX;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import org.junit.Test;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
@@ -64,7 +65,7 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeBy(-20, -20);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testSetsTheSizeOfTheCurrentWindowFromFrame() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -79,7 +80,7 @@ public class WindowTest extends JUnit4TestBase {
     changeSizeBy(-20, -20);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testSetsTheSizeOfTheCurrentWindowFromIframe() {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
@@ -142,12 +143,13 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
+    assumeNotLinuxOnTravis();
 
     changeSizeTo(new Dimension(450, 273));
     maximize();
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
   @Test
   public void testCanMaximizeTheWindowFromFrame() throws InterruptedException {
@@ -155,6 +157,7 @@ public class WindowTest extends JUnit4TestBase {
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
+    assumeNotLinuxOnTravis();
 
     driver.get(pages.framesetPage);
     changeSizeTo(new Dimension(450, 274));
@@ -164,13 +167,14 @@ public class WindowTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {PHANTOMJS}, reason = "Not yet implemented.")
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testCanMaximizeTheWindowFromIframe() throws InterruptedException {
     // Browser window cannot be resized or moved on ANDROID (and most mobile platforms
     // though others aren't defined in org.openqa.selenium.Platform).
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(ANDROID));
     assumeNotLinuxAtSauce();
+    assumeNotLinuxOnTravis();
 
     driver.get(pages.iframePage);
     changeSizeTo(new Dimension(450, 275));
@@ -276,6 +280,10 @@ public class WindowTest extends JUnit4TestBase {
     // Firefox/Linux: FirefoxDriver finally report a changed window size 22 seconds after replying
     // the maximize command, but video never shows the maximized window.
     assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && SauceDriver.shouldUseSauce());
+  }
+
+  private void assumeNotLinuxOnTravis() {
+    assumeFalse(TestUtilities.getEffectivePlatform(driver).is(LINUX) && Boolean.valueOf(System.getenv().getOrDefault("TRAVIS", "false")));
   }
 
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 using System.Collections.ObjectModel;
 
 namespace OpenQA.Selenium.Interactions
@@ -10,18 +7,13 @@ namespace OpenQA.Selenium.Interactions
     public class CombinedInputActionsTest : DriverTestFixture
     {
         [Test]
-        [IgnoreBrowser(Browser.Chrome, "Shift-click implementation not complete")]
+        [IgnoreBrowser(Browser.IE, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Remote, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Shift-click implementation not complete")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowClickingOnFormElements()
         {
-            if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
-            {
-                Assert.Ignore("Skipping ShouldAllowClickingOnFormElements: Only works with native events on Linux.");
-            }
-
             driver.Url = formSelectionPage;
 
             ReadOnlyCollection<IWebElement> options = driver.FindElements(By.TagName("option"));
@@ -43,17 +35,13 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Remote, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.IPhone, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Android, "Control-click implementation not complete")]
         [IgnoreBrowser(Browser.Safari, "API not implemented in driver")]
         public void ShouldAllowSelectingMultipleItems()
         {
-            if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
-            {
-                Assert.Ignore("Skipping ShouldAllowSelectingMultipleItems: Only works with native events on Linux.");
-            }
-
             driver.Url = selectableItemsPage;
 
             IWebElement reportingElement = driver.FindElement(By.Id("infodiv"));
@@ -203,6 +191,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -213,7 +202,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
             {
-                Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
+                //Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
             }
 
             driver.Url = linkedImage;
@@ -233,6 +222,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE)]
         [IgnoreBrowser(Browser.Remote)]
         [IgnoreBrowser(Browser.IPhone)]
         [IgnoreBrowser(Browser.Android)]
@@ -243,7 +233,7 @@ namespace OpenQA.Selenium.Interactions
         {
             if (!IsNativeEventsEnabled || (!Platform.CurrentPlatform.IsPlatformType(PlatformType.Linux)))
             {
-                Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
+                //Assert.Ignore("Skipping CombiningShiftAndClickResultsInANewWindow: Only works with native events on Linux.");
             }
 
             driver.Url = clickEventPage;

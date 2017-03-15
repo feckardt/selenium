@@ -22,16 +22,17 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeFalse;
 import static org.junit.Assume.assumeTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
 
 import org.junit.Test;
 import org.openqa.selenium.environment.GlobalTestEnvironment;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.NeedsFreshDriver;
 import org.openqa.selenium.testing.NotYetImplemented;
 import org.openqa.selenium.testing.TestUtilities;
 
@@ -65,6 +66,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testEnteringHebrewTextFromLeftToRight() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -75,6 +77,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @Test
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   public void testEnteringHebrewTextFromRightToLeft() {
     driver.get(pages.chinesePage);
     WebElement input = driver.findElement(By.name("i18n"));
@@ -86,8 +89,9 @@ public class I18nTest extends JUnit4TestBase {
 
   @Test
   @Ignore(
-      value = {MARIONETTE, CHROME},
-      reason = "CHROME: ChromeDriver only supports characters in the BMP")
+      value = {MARIONETTE, HTMLUNIT, CHROME},
+      reason = "CHROME: ChromeDriver only supports characters in the BMP" +
+               "MARIONETTE: Doesn't handle first codepoint correctly.")
   public void testEnteringSupplementaryCharacters() {
     assumeFalse("IE: versions less thank 10 have issue 5069",
                 TestUtilities.isInternetExplorer(driver) &&
@@ -121,7 +125,7 @@ public class I18nTest extends JUnit4TestBase {
   }
 
   @NeedsFreshDriver
-  @Ignore(value = {IE, CHROME, FIREFOX},
+  @Ignore(value = {IE, CHROME, FIREFOX, MARIONETTE},
           reason = "Not implemented on anything other than Firefox/Linux at the moment.")
   @NotYetImplemented(HTMLUNIT)
   @Test
@@ -169,7 +173,7 @@ public class I18nTest extends JUnit4TestBase {
         + " It was:" + elementValue, elementValue.equals(tokyo));
   }
 
-  @Ignore(value = {IE, CHROME, FIREFOX})
+  @Ignore(value = {IE, CHROME, FIREFOX, HTMLUNIT})
   @Test
   public void testShouldBeAbleToInputJapanese() {
     assumeTrue("IME is supported on Linux only.",

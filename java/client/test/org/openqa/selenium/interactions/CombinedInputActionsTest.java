@@ -25,14 +25,14 @@ import static org.junit.Assume.assumeFalse;
 import static org.openqa.selenium.WaitingConditions.elementValueToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.getIEVersion;
 import static org.openqa.selenium.testing.TestUtilities.isInternetExplorer;
@@ -42,7 +42,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.Keys;
-import org.openqa.selenium.NoDriverAfterTest;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WaitingConditions;
@@ -51,6 +50,7 @@ import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
 import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 
 import java.util.List;
 
@@ -183,7 +183,7 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
   }
 
   @Ignore(value = {PHANTOMJS, SAFARI}, reason = "Not tested")
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void canMoveMouseToAnElementInAnIframeAndClick() {
     driver.get(appServer.whereIs("click_tests/click_in_iframe.html"));
@@ -276,8 +276,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
     wait.until(titleIs("We Arrive Here"));
   }
 
-  @NotYetImplemented(HTMLUNIT)
   @Test
+  @Ignore(HTMLUNIT)
   public void testChordControlCutAndPaste() {
     assumeFalse("FIXME: macs don't have CONRTROL key", getEffectivePlatform().is(Platform.MAC));
     assumeFalse("Windows: native events library  does not support storing modifiers state yet",
@@ -352,7 +352,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
+  @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void canClickOnASuckerFishStyleMenu() throws InterruptedException {
     driver.get(pages.javascriptPage);
 
@@ -379,7 +380,8 @@ public class CombinedInputActionsTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @Ignore(value = {SAFARI, MARIONETTE}, issues = {4136})
+  @Ignore(value = {SAFARI, MARIONETTE, HTMLUNIT}, issues = {4136})
+  @NotYetImplemented(HTMLUNIT) // broken in 2.20
   public void testCanClickOnSuckerFishMenuItem() throws Exception {
     driver.get(pages.javascriptPage);
 

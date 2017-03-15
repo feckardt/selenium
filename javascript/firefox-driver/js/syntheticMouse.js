@@ -83,9 +83,20 @@ SyntheticMouse.prototype.isElementShownAndClickable = function(element) {
     return error;
   }
 
-  var error = this.isElementClickable(element);
-  if (error) {
-    return error;
+  var checkOverlapping = true;
+  try {
+    var prefStore = fxdriver.moz.getService('@mozilla.org/preferences-service;1',
+                                            'nsIPrefBranch');
+    if (prefStore.getBoolPref('webdriver.overlappingCheckDisabled', false)) {
+      checkOverlapping = false;
+    }
+  } catch (ignored) {}
+
+  if (checkOverlapping) {
+    error = this.isElementClickable(element);
+    if (error) {
+      return error;
+    }
   }
 }
 
@@ -173,11 +184,28 @@ SyntheticMouse.prototype.isElementClickable = function(element) {
     parentElemIter = parentElemIter.parentNode;
   }
 
+  // elementFromPoint is not without fault, for example:
+  // <button><span></button> and span.click() results in
+  // elementAtPoint being the button rather than the span.
+  // catch these potential edge cases by checking if the
+  // target element is a direct descendent of the elementAtPoint
+  parentElemIter = element.parentNode;
+  while (parentElemIter) {
+    if (parentElemIter == elementAtPoint) {
+      return;
+    }
+    parentElemIter = parentElemIter.parentNode;
+  }
+
   var elementAtPointHTML =
     elementAtPoint.outerHTML.replace(elementAtPoint.innerHTML, '');
+  
+  var elementHTML =
+    element.outerHTML.replace(element.innerHTML, '');
 
   return SyntheticMouse.newResponse(bot.ErrorCode.UNKNOWN_ERROR,
-      'Element is not clickable at point (' + coords.x + ', ' + coords.y + '). ' +
+      'Element ' + elementHTML + ' is not clickable at point (' 
+       + coords.x + ', ' + coords.y + '). ' +
       'Other element would receive the click: ' + elementAtPointHTML);
 };
 
@@ -288,7 +316,7 @@ SyntheticMouse.prototype.click = function(target) {
     }
 
     if (parent && parent.tagName.toLowerCase() == 'select' && !parent.multiple) {
-      goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + element);
+      goog.log.info(SyntheticMouse.LOG_, 'About to do a bot.action.click on ' + parent);
       bot.action.click(parent, undefined /* coords */);
     }
 
@@ -300,9 +328,12 @@ SyntheticMouse.prototype.click = function(target) {
     bot.action.click(element, this.lastMousePosition, this.getMouse_(), true);
   }
 
-  if (bot.dom.isEditable(element) && element.value !== undefined) {
-    goog.dom.selection.setCursorPosition(
+  try { // https://github.com/SeleniumHQ/selenium/issues/1509
+    if (bot.dom.isEditable(element) && element.value !== undefined) {
+      goog.dom.selection.setCursorPosition(
         element, element.value.length);
+    }
+  } catch (ignored) {
   }
 
   this.lastElement = element;

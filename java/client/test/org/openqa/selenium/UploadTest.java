@@ -23,11 +23,10 @@ import static org.openqa.selenium.Platform.ANDROID;
 import static org.openqa.selenium.WaitingConditions.elementTextToEqual;
 import static org.openqa.selenium.support.ui.ExpectedConditions.not;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOf;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.Files;
@@ -37,7 +36,7 @@ import org.junit.Test;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.JUnit4TestBase;
 import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.TestUtilities;
 
 import java.io.File;
@@ -60,7 +59,8 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @JavascriptEnabled
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
+  @Ignore(value = HTMLUNIT, reason = "Possible bug in getAttribute?")
   @Test
   public void testFileUploading() throws Exception {
     assumeFalse(
@@ -82,7 +82,7 @@ public class UploadTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME, IE, PHANTOMJS, SAFARI})
+  @Ignore(value = {IE, PHANTOMJS, SAFARI})
   public void testCleanFileInput() throws Exception {
     driver.get(pages.uploadPage);
     WebElement element = driver.findElement(By.id("upload"));

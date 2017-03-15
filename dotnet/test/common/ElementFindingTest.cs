@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
 using System.Collections.ObjectModel;
 using OpenQA.Selenium.Internal;
@@ -51,7 +49,7 @@ namespace OpenQA.Selenium
         public void FindingASingleElementByEmptyIdShouldThrow()
         {
             driver.Url = formsPage;
-            Assert.Throws<NoSuchElementException>(() => driver.FindElement(By.Id("")));
+            Assert.Throws(Is.InstanceOf<NoSuchElementException>(), () => driver.FindElement(By.Id("")));
         }
 
         [Test]

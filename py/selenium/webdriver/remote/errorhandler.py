@@ -17,7 +17,6 @@
 
 from selenium.common.exceptions import ElementNotSelectableException
 from selenium.common.exceptions import ElementNotVisibleException
-from selenium.common.exceptions import InvalidCookieDomainException
 from selenium.common.exceptions import InvalidElementStateException
 from selenium.common.exceptions import InvalidSelectorException
 from selenium.common.exceptions import ImeNotAvailableException
@@ -26,7 +25,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.common.exceptions import NoSuchFrameException
 from selenium.common.exceptions import NoSuchWindowException
 from selenium.common.exceptions import StaleElementReferenceException
-from selenium.common.exceptions import UnableToSetCookieException
 from selenium.common.exceptions import UnexpectedAlertPresentException
 from selenium.common.exceptions import NoAlertPresentException
 from selenium.common.exceptions import ErrorInResponseException
@@ -90,7 +88,6 @@ class ErrorHandler(object):
         status = response.get('status', None)
         if status is None or status == ErrorCode.SUCCESS:
             return
-
         value = None
         message = response.get("message", "")
         screen = response.get("screen", "")
@@ -100,15 +97,23 @@ class ErrorHandler(object):
             if value_json and isinstance(value_json, basestring):
                 import json
                 try:
-                  value = json.loads(value_json)
-                  status = value.get('error', None)
-                  if status is None:
-                      status = value["status"]
-                      message = value["value"]["message"]
-                  else:
-                      message = value.get('message', None)
+                    value = json.loads(value_json)
+                    if len(value.keys()) == 1:
+                        value = value['value']
+                    status = value.get('error', None)
+                    if status is None:
+                        status = value["status"]
+                        message = value["value"]
+                        if not isinstance(message, basestring):
+                            value = message
+                            try:
+                                message = message['message']
+                            except TypeError:
+                                message = None
+                    else:
+                        message = value.get('message', None)
                 except ValueError:
-                  pass
+                    pass
 
         exception_class = ErrorInResponseException
         if status in ErrorCode.NO_SUCH_ELEMENT:
@@ -157,7 +162,7 @@ class ErrorHandler(object):
             if exception_class == ErrorInResponseException:
                 raise exception_class(response, value)
             raise exception_class(value)
-        if message != "" and 'message' in value:
+        if message == "" and 'message' in value:
             message = value['message']
 
         screen = None
@@ -188,4 +193,4 @@ class ErrorHandler(object):
         raise exception_class(message, screen, stacktrace)
 
     def _value_or_default(self, obj, key, default):
-      return obj[key] if key in obj else default
+        return obj[key] if key in obj else default

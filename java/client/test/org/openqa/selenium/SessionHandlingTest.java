@@ -17,18 +17,17 @@
 
 package org.openqa.selenium;
 
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.openqa.selenium.remote.SessionNotFoundException;
 import org.openqa.selenium.testing.Ignore;
 import org.openqa.selenium.testing.SeleniumTestRunner;
 import org.openqa.selenium.testing.drivers.WebDriverBuilder;
-
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
 
 @RunWith(SeleniumTestRunner.class)
 @Ignore(value = {REMOTE}, reason = "Not tested")
@@ -49,7 +48,7 @@ public class SessionHandlingTest {
   }
 
   @Test
-  @Ignore(value = {PHANTOMJS, MARIONETTE})
+  @Ignore(value = {PHANTOMJS})
   public void callingQuitAfterClosingTheLastWindowIsANoOp() {
     WebDriver driver = new WebDriverBuilder().get();
 
@@ -63,7 +62,7 @@ public class SessionHandlingTest {
     }
   }
 
-  @Test(expected = SessionNotFoundException.class)
+  @Test(expected = NoSuchSessionException.class)
   @Ignore(value = {SAFARI}, reason = "Safari: throws UnreachableBrowserException")
   public void callingAnyOperationAfterQuitShouldThrowAnException() {
     WebDriver driver = new WebDriverBuilder().get();
@@ -71,7 +70,7 @@ public class SessionHandlingTest {
     driver.getCurrentUrl();
   }
 
-  @Test(expected = SessionNotFoundException.class)
+  @Test(expected = NoSuchSessionException.class)
   @Ignore(value = {FIREFOX, PHANTOMJS, SAFARI, MARIONETTE}, reason =
       "Firefox: can perform an operation after closing the last window,"
       + "PhantomJS: throws NoSuchWindowException,"

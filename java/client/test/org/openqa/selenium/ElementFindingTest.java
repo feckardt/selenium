@@ -17,29 +17,30 @@
 
 package org.openqa.selenium;
 
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-import org.openqa.selenium.testing.JavascriptEnabled;
-import org.openqa.selenium.testing.NotYetImplemented;
-import org.openqa.selenium.testing.TestUtilities;
-
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.greaterThan;
+import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.startsWith;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeFalse;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.REMOTE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.REMOTE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.isOldIe;
 
-import static org.hamcrest.Matchers.is;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.JavascriptEnabled;
+import org.openqa.selenium.testing.NeedsFreshDriver;
+import org.openqa.selenium.testing.NotYetImplemented;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
+import org.openqa.selenium.testing.TestUtilities;
 
 import java.util.List;
 
@@ -91,7 +92,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingASingleElementByEmptyIdShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.id(""));
@@ -157,14 +157,12 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingASingleElementByEmptyNameShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.name(""));
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingMultipleElementsByEmptyNameShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.name(""));
@@ -172,14 +170,12 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingASingleElementByNameWithSpaceShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.name("nonexistent button"));
   }
 
   @Test
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingMultipleElementsByNameWithSpaceShouldReturnEmptyList() {
     driver.get(pages.formPage);
     List<WebElement> elements = driver.findElements(By.name("nonexistent button"));
@@ -218,14 +214,12 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingASingleElementByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     driver.findElement(By.tagName(""));
   }
 
   @Test(expected = NoSuchElementException.class)
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   public void testFindingMultipleElementsByEmptyTagNameShouldThrow() {
     driver.get(pages.formPage);
     driver.findElements(By.tagName(""));
@@ -304,42 +298,38 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.className("nameB"));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className(""));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.className(""));
   }
 
-  @Ignore(value = {CHROME}, reason = "throws WebDriverException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className("a b"));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws WebDriverException")
+  @Ignore(value = {MARIONETTE})
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByCompoundClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.className("a b"));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.className("!@#$%^&*"));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE}, reason = "Chrome: throws InvalidElementStateException")
+  @Ignore(value = {MARIONETTE})
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidClassNameShouldThrow() {
     driver.get(pages.xhtmlTestPage);
@@ -403,7 +393,6 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Ignore({IE, MARIONETTE, SAFARI})
-  @NotYetImplemented(HTMLUNIT)
   @Test
   public void testShouldBeAbleToFindElementByXPathWithNamespace() {
     driver.get(pages.svgPage);
@@ -412,6 +401,7 @@ public class ElementFindingTest extends JUnit4TestBase {
   }
 
   @Ignore({IE, SAFARI, CHROME})
+  @NotYetImplemented(value = HTMLUNIT, reason = "This used to work in HtmlUnit 2.23")
   @Test
   public void testShouldBeAbleToFindElementByXPathInXmlDocument() {
     driver.get(pages.simpleXmlDocument);
@@ -427,14 +417,12 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.xpath("//a[@id='Not here']"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElement() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -443,7 +431,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElement() {
     driver.get(pages.formPage);
@@ -451,7 +438,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     body.findElement(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathIsSyntacticallyInvalidInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -461,14 +447,12 @@ public class ElementFindingTest extends JUnit4TestBase {
     body.findElements(By.xpath("this][isnot][valid"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElement() {
     driver.get(pages.formPage);
     driver.findElement(By.xpath("count(//input)"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInDriverFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -477,7 +461,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElements(By.xpath("count(//input)"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElement() {
     driver.get(pages.formPage);
@@ -486,7 +469,6 @@ public class ElementFindingTest extends JUnit4TestBase {
     body.findElement(By.xpath("count(//input)"));
   }
 
-  @Ignore(value = MARIONETTE, reason = "https://bugzilla.mozilla.org/show_bug.cgi?id=1204504")
   @Test(expected = InvalidSelectorException.class)
   public void testShouldThrowInvalidSelectorExceptionWhenXPathReturnsWrongTypeInElementFindElements() {
     assumeFalse("Ignoring xpath error test in IE6", TestUtilities.isIe6(driver));
@@ -566,32 +548,24 @@ public class ElementFindingTest extends JUnit4TestBase {
     assertThat(elements.size(), is(0));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE},
-          reason = "Chrome: throws WebDriverException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector(""));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE},
-          reason = "Chrome: throws WebDriverException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByEmptyCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElements(By.cssSelector(""));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE},
-          reason = "Chrome: throws InvalidElementStateException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingASingleElementByInvalidCssSelectorShouldThrow() {
     driver.get(pages.xhtmlTestPage);
     driver.findElement(By.cssSelector("//a/b/c[@id='1']"));
   }
 
-  @Ignore(value = {CHROME, MARIONETTE},
-          reason = "Chrome: throws InvalidElementStateException, Marionette: throws InvalidElementStateException")
   @Test(expected = NoSuchElementException.class)
   public void testFindingMultipleElementsByInvalidCssSelectorShouldThrow() {
     assumeFalse("Ignoring test for lack of error in CSS in IE6", TestUtilities.isIe6(driver));
@@ -755,7 +729,7 @@ public class ElementFindingTest extends JUnit4TestBase {
     driver.findElement(By.id("nonExistantButton"));
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   public void testAnElementFoundInADifferentFrameIsStale() {
     driver.get(pages.missedJsReferencePage);
@@ -772,7 +746,7 @@ public class ElementFindingTest extends JUnit4TestBase {
 
   @JavascriptEnabled
   @Test
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   public void testAnElementFoundInADifferentFrameViaJsCanBeUsed() {
     driver.get(pages.missedJsReferencePage);
 

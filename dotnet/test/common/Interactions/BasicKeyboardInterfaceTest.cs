@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 namespace OpenQA.Selenium.Interactions
 {
@@ -30,7 +27,6 @@ namespace OpenQA.Selenium.Interactions
 
         [Test]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
-        [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Remote, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Android, "API not implemented in driver")]
@@ -56,6 +52,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]
@@ -85,6 +82,7 @@ namespace OpenQA.Selenium.Interactions
         }
 
         [Test]
+        [IgnoreBrowser(Browser.IE, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Firefox, "API not implemented in driver")]
         [IgnoreBrowser(Browser.Chrome, "API not implemented in driver")]
         [IgnoreBrowser(Browser.IPhone, "API not implemented in driver")]

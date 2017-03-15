@@ -21,8 +21,8 @@ package org.openqa.selenium.testing.drivers;
 import com.google.common.collect.Sets;
 
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.testing.Driver;
 import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.Ignore.Driver;
 
 import java.util.Set;
 
@@ -48,8 +48,8 @@ public class IgnoreComparator {
       return true;
     }
 
-    for (Ignore.Driver value : ignoreAnnotation.value()) {
-      if (ignored.contains(value) || value == Ignore.Driver.ALL) {
+    for (Driver value : ignoreAnnotation.value()) {
+      if (ignored.contains(value) || value == Driver.ALL) {
         for (Platform platform : ignoreAnnotation.platforms()) {
           if (currentPlatform.is(platform)) {
             return true;

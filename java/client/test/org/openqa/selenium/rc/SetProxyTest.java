@@ -18,9 +18,8 @@
 package org.openqa.selenium.rc;
 
 import static org.junit.Assert.assertTrue;
-
 import static org.openqa.selenium.remote.CapabilityType.PROXY;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
+import static org.openqa.selenium.testing.Driver.IE;
 
 import com.google.common.io.Files;
 
@@ -29,7 +28,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import org.openqa.selenium.Pages;
 import org.openqa.selenium.Proxy;
 import org.openqa.selenium.WebDriver;

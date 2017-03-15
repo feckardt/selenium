@@ -18,10 +18,10 @@
 package org.openqa.selenium.remote.server;
 
 import static org.junit.Assert.assertTrue;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.HTMLUNIT;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.HTMLUNIT;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 
 import com.google.common.base.Charsets;
 import com.google.common.io.CharStreams;
@@ -49,6 +49,7 @@ import org.openqa.selenium.testing.drivers.Browser;
 import org.openqa.selenium.testing.drivers.BrowserToCapabilities;
 import org.openqa.selenium.testing.drivers.OutOfProcessSeleniumServer;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.Map;
@@ -61,7 +62,7 @@ public class SessionLogsTest extends JUnit4TestBase {
   private RemoteWebDriver localDriver;
 
   @BeforeClass
-  public static void startUpServer() {
+  public static void startUpServer() throws IOException {
     server = new OutOfProcessSeleniumServer();
     server.enableLogCapture();
     server.start();

@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
 using NUnit.Framework;
+using OpenQA.Selenium.Environment;
 
 namespace OpenQA.Selenium
 {
@@ -32,6 +30,11 @@ namespace OpenQA.Selenium
         [IgnoreBrowser(Browser.WindowsPhone, "Does not yet support file uploads")]
         public void ShouldAllowFileUploading()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not upload with upload element.");
+            }
+
             driver.Url = uploadPage;
             driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
             driver.FindElement(By.Id("go")).Submit();
@@ -49,6 +52,11 @@ namespace OpenQA.Selenium
         //[IgnoreBrowser(Browser.IE, "Transparent file upload element not yet handled")]
         public void ShouldAllowFileUploadingUsingTransparentUploadElement()
         {
+            if (TestUtilities.IsMarionette(driver))
+            {
+                Assert.Ignore("Marionette does not upload with tranparent upload element.");
+            }
+
             driver.Url = transparentUploadPage;
             driver.FindElement(By.Id("upload")).SendKeys(testFile.FullName);
             driver.FindElement(By.Id("go")).Submit();
@@ -62,7 +70,8 @@ namespace OpenQA.Selenium
 
         private void CreateTempFile(string content)
         {
-            testFile = new System.IO.FileInfo("webdriver.tmp");
+            string testFileName = System.IO.Path.Combine(EnvironmentManager.Instance.CurrentDirectory, "webdriver.tmp");
+            testFile = new System.IO.FileInfo(testFileName);
             if (testFile.Exists)
             {
                 testFile.Delete();

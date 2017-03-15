@@ -17,12 +17,6 @@
 
 package org.openqa.selenium;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.openqa.selenium.testing.Ignore;
-import org.openqa.selenium.testing.JUnit4TestBase;
-
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -32,16 +26,23 @@ import static org.openqa.selenium.Platform.LINUX;
 import static org.openqa.selenium.support.ui.ExpectedConditions.frameToBeAvailableAndSwitchToIt;
 import static org.openqa.selenium.support.ui.ExpectedConditions.titleIs;
 import static org.openqa.selenium.support.ui.ExpectedConditions.visibilityOfAllElementsLocatedBy;
-import static org.openqa.selenium.testing.Ignore.Driver.CHROME;
-import static org.openqa.selenium.testing.Ignore.Driver.FIREFOX;
-import static org.openqa.selenium.testing.Ignore.Driver.IE;
-import static org.openqa.selenium.testing.Ignore.Driver.MARIONETTE;
-import static org.openqa.selenium.testing.Ignore.Driver.PHANTOMJS;
-import static org.openqa.selenium.testing.Ignore.Driver.SAFARI;
+import static org.openqa.selenium.testing.Driver.CHROME;
+import static org.openqa.selenium.testing.Driver.FIREFOX;
+import static org.openqa.selenium.testing.Driver.IE;
+import static org.openqa.selenium.testing.Driver.MARIONETTE;
+import static org.openqa.selenium.testing.Driver.PHANTOMJS;
+import static org.openqa.selenium.testing.Driver.SAFARI;
 import static org.openqa.selenium.testing.TestUtilities.getEffectivePlatform;
 import static org.openqa.selenium.testing.TestUtilities.isChrome;
 
 import com.google.common.collect.Sets;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.testing.Ignore;
+import org.openqa.selenium.testing.JUnit4TestBase;
+import org.openqa.selenium.testing.SwitchToTopAfterTest;
 import org.openqa.selenium.testing.drivers.SauceDriver;
 
 import java.awt.image.BufferedImage;
@@ -296,8 +297,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
   }
 
   @Test
-  @Ignore(value = {CHROME},
-          reason = " CHROME: Unknown actual colors are presented at screenshot")
+  @Ignore(CHROME)
   public void testShouldCaptureScreenshotAtIFramePage() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
 
@@ -321,7 +321,7 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   @Ignore(
       value = {IE, MARIONETTE},
@@ -357,12 +357,11 @@ public class TakesScreenshotTest extends JUnit4TestBase {
     compareColors(expectedColors, actualColors);
   }
 
-  @NoDriverAfterTest // So that next test never starts with "inside a frame" base state.
+  @SwitchToTopAfterTest
   @Test
   @Ignore(
-      value = {IE, CHROME, MARIONETTE},
-      reason = " IE: v9 takes screesnhot only of switched-in frame area " +
-               " CHROME: Unknown actual colors are presented at screenshot"
+      value = {CHROME, IE, MARIONETTE},
+      reason = " IE: v9 takes screesnhot only of switched-in frame area"
   )
   public void testShouldCaptureScreenshotAtIFramePageAfterSwitching() throws Exception {
     driver.get(appServer.whereIs("screen/screen_iframes.html"));
